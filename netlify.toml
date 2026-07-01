@@ -1,0 +1,17 @@
+# Netlify configuration for the Next.js Medicine Price Registry.
+# The official Next.js runtime is installed automatically by Netlify when it
+# detects a Next.js app, so no plugin needs to be declared here.
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  # better-sqlite3 ships prebuilt binaries; building on Netlify's Linux image
+  # produces a binary that matches the function runtime.
+  NODE_VERSION = "22"
+
+# Bundle the read-only SQLite database into every serverless/edge function so
+# the API route handlers can open it at runtime.
+[functions]
+  included_files = ["data/mpr.db"]
