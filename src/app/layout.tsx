@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import ThemeToggle from "@/components/ThemeToggle";
 import "./globals.css";
+
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 export const metadata: Metadata = {
   title: "MPR (Medicine Price Registry)",
@@ -31,6 +34,7 @@ export default function RootLayout({
           {children}
         </main>
       </body>
+      {GA_ID && <GoogleAnalytics gaId={GA_ID} />}
     </html>
   );
 }
