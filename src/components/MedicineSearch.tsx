@@ -290,7 +290,7 @@ function ProductDetailPanel({ detail }: { detail?: ProductDetail }) {
           <dl className="detail-list">
             <dt>Medicine Single Exit Price:</dt>
             <dd>{detail.sep}</dd>
-            <dt>Max dispensing fee:</dt>
+            <dt>Max dispensing fee (incl VAT):</dt>
             <dd>{detail.dispensing_fee}</dd>
             <dt>Price range (incl VAT and fees):</dt>
             <dd>
