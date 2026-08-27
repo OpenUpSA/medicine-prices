@@ -1,11 +1,26 @@
-import { PRICE_PARAMETERS } from "@/lib/pricing";
+import { DISPENSING_FEE_UPDATED, PRICE_PARAMETERS } from "@/lib/pricing";
 
-function feeRule(threshold: number, perc: number, flat: number) {
+const rand = (n: number) => `R${n.toFixed(2)}`;
+
+/**
+ * Describe one fee band. `prevMax` is the inclusive upper bound of the band
+ * below it, so this band starts one cent higher.
+ */
+function feeRule(
+  maxSep: number,
+  perc: number,
+  flat: number,
+  prevMax: number | null
+) {
   const pct = Math.round(perc * 100);
-  if (threshold !== Infinity) {
-    return `Where the SEP is less than R${threshold.toFixed(2)}, the maximum dispensing fee is R${flat.toFixed(2)} + ${pct}% of the SEP.`;
+  const fee = `the maximum dispensing fee is ${rand(flat)} + ${pct}% of the SEP`;
+  if (prevMax === null) {
+    return `Where the SEP is ${rand(maxSep)} or less, ${fee}.`;
   }
-  return `Otherwise the maximum dispensing fee is R${flat.toFixed(2)} + ${pct}% of the SEP.`;
+  if (maxSep === Infinity) {
+    return `Where the SEP is ${rand(prevMax + 0.01)} or more, ${fee}.`;
+  }
+  return `Where the SEP is between ${rand(prevMax + 0.01)} and ${rand(maxSep)}, ${fee}.`;
 }
 
 export default function InfoPanels({
@@ -73,6 +88,9 @@ export default function InfoPanels({
             What is the{" "}
             <abbr title="Single Exit Price">Single Exit Price</abbr>?
           </h3>
+          <span className="last-updated">
+            Fees updated {DISPENSING_FEE_UPDATED}
+          </span>
         </div>
         <div className="info-body">
           <p>
@@ -83,8 +101,15 @@ export default function InfoPanels({
             following charges (excl VAT):
           </p>
           <ul>
-            {PRICE_PARAMETERS.prices.map(([threshold, perc, flat], i) => (
-              <li key={i}>{feeRule(threshold, perc, flat)}</li>
+            {PRICE_PARAMETERS.prices.map(([maxSep, perc, flat], i) => (
+              <li key={i}>
+                {feeRule(
+                  maxSep,
+                  perc,
+                  flat,
+                  i === 0 ? null : PRICE_PARAMETERS.prices[i - 1][0]
+                )}
+              </li>
             ))}
           </ul>
           <p>
@@ -95,7 +120,8 @@ export default function InfoPanels({
           </p>
           <p>
             Please note that allowed dispensing fees may change and this website
-            may not be completely up-to-date.
+            may not be completely up-to-date. The dispensing fees above were
+            last updated on {DISPENSING_FEE_UPDATED}.
             {lastUpdated
               ? ` The prices listed above were valid at ${lastUpdated}.`
               : ""}

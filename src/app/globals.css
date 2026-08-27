@@ -388,9 +388,18 @@ button.panel-heading:focus-visible {
   color: var(--info-heading);
   border-bottom: 1px solid var(--info-border);
 }
+.info-panel .panel-heading {
+  flex-wrap: wrap;
+}
 .info-panel .panel-heading h3 {
   margin: 0;
   font-size: 1.05rem;
+}
+.info-panel .panel-heading .last-updated {
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: var(--muted);
+  white-space: nowrap;
 }
 .info-panel .info-body {
   padding: 14px;

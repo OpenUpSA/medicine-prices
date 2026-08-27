@@ -5,22 +5,24 @@
  *
  * Source of truth: Medicines and Related Substances Act fee schedule.
  */
+export const DISPENSING_FEE_UPDATED = "27 August 2026";
+
 export const PRICE_PARAMETERS = {
   VAT: 1.15,
-  // [threshold, percentage, flat_rate]
+  // [max_sep_for_band (inclusive), percentage, flat_rate]
   prices: [
-    [118.8, 0.46, 15.8],
-    [315.53, 0.33, 30.24],
-    [1104.4, 0.15, 86.11],
-    [Infinity, 0.05, 198.36],
+    [159.01, 0.46, 23.13],
+    [423.55, 0.33, 42.91],
+    [1530.72, 0.15, 122.59],
+    [Infinity, 0.05, 270.54],
   ] as const,
 };
 
 /** Maximum dispensing fee (incl VAT) allowed on top of the SEP. */
 export function dispensingFee(sep: number): number {
   if (sep == null || Number.isNaN(sep)) return sep;
-  for (const [threshold, perc, flat] of PRICE_PARAMETERS.prices) {
-    if (sep < threshold) {
+  for (const [maxSep, perc, flat] of PRICE_PARAMETERS.prices) {
+    if (sep <= maxSep) {
       return (sep * perc + flat) * PRICE_PARAMETERS.VAT;
     }
   }
